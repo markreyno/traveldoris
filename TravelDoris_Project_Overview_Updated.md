@@ -41,7 +41,7 @@ Build an AI-powered travel planner that can:
      |              |               |
  Flight Service  Hotel Service  Activity Service
      |              |               |
- Amadeus API   Hotel APIs    Activity APIs
+ Duffel Flights  Duffel Stays  Viator API
 ```
 
 ---
@@ -108,7 +108,6 @@ traveldoris/
 │   │   ├── flight_service.py
 │   │   ├── hotel_service.py
 │   │   ├── activity_service.py
-│   │   └── amadeus.py
 │   │
 │   └── prompts/
 │
@@ -148,6 +147,30 @@ Ranked Trip Plan
 
 ---
 
+# MVP Travel Data Providers
+
+| Category | Provider | Purpose |
+| --- | --- | --- |
+| Flights | Duffel Flights | Search flight offers and provide a future path toward booking |
+| Hotels | Duffel Stays | Search accommodation options and provide a future path toward booking |
+| Activities | Viator | Search tours, attractions, and bookable experiences |
+
+Amadeus is no longer part of the planned MVP because its current developer-access model is not a good fit for TravelDoris's self-service development workflow.
+
+Provider-specific code stays behind TravelDoris's service layer:
+
+```text
+Doris Trip Manager
+        |
+        +-- Flight Service ----> Duffel Flights
+        +-- Hotel Service -----> Duffel Stays
+        +-- Activity Service --> Viator
+```
+
+Doris should not contain Duffel- or Viator-specific API logic. If a provider changes later, we should be able to replace the service implementation without redesigning the trip manager.
+
+---
+
 # Core Data Model
 
 The first model is a TripRequirement object.
@@ -180,17 +203,18 @@ This object becomes the shared state used by the Doris trip manager and its serv
 
 ## Phase 2 — Flight Search
 
-- Integrate Amadeus API
+- Integrate Duffel Flights API
 - Return ranked flight options
 
 ## Phase 3 — Hotel Search
 
-- Integrate hotel provider
+- Integrate Duffel Stays API
 - Rank hotels based on user preferences
 
 ## Phase 4 — Activities
 
-- Recommend attractions
+- Integrate Viator for tours and activities
+- Recommend attractions based on interests, budget, and itinerary fit
 - Add restaurant suggestions
 
 ## Phase 5 — Itinerary
